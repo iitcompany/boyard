@@ -1,0 +1,67 @@
+<?
+$aMenuLinks = Array(
+	Array(
+		"Подключение", 
+		"/telephony/lines", 
+		Array("/telephony/edit.php"), 
+		Array("menu_item_id"=>"menu_telephony_lines"), 
+		"Bitrix\\Voximplant\\Security\\Helper::isLinesMenuEnabled()" 
+	),
+	Array(
+		"Баланс и статистика", 
+		"/telephony/index.php", 
+		Array("/telephony/detail.php"), 
+		Array("menu_item_id"=>"menu_telephony_balance"), 
+		"Bitrix\\Voximplant\\Security\\Helper::isBalanceMenuEnabled()" 
+	),
+	Array(
+		"Пользователи", 
+		"/telephony/users.php", 
+		Array(), 
+		Array("menu_item_id"=>"menu_telephony_users"), 
+		"Bitrix\\Voximplant\\Security\\Helper::isUsersMenuEnabled()" 
+	),
+	Array(
+		"Группы", 
+		"/telephony/groups.php", 
+		Array("/telephony/editgroup.php"), 
+		Array("menu_item_id"=>"menu_telephony_groups"), 
+		"Bitrix\\Voximplant\\Security\\Helper::isUsersMenuEnabled()" 
+	),
+	Array(
+		"Аппараты", 
+		"/telephony/phones.php", 
+		Array(), 
+		Array("menu_item_id"=>"menu_telephony_phones"), 
+		"" 
+	),
+	Array(
+		"Права доступа", 
+		"/telephony/permissions.php", 
+		Array("/telephony/editrole.php"), 
+		Array("menu_item_id"=>"menu_telephony_permissions"), 
+		"Bitrix\\Voximplant\\Security\\Helper::isSettingsMenuEnabled()" 
+	),
+	Array(
+		"Голосовое меню", 
+		"/telephony/ivr.php", 
+		Array("/telephony/editivr.php"), 
+		Array("menu_item_id"=>"menu_telephony_ivr"), 
+		"Bitrix\\Voximplant\\Security\\Helper::isSettingsMenuEnabled()" 
+	),
+	Array(
+		"Настройки телефонии", 
+		"/telephony/configs.php", 
+		Array(), 
+		Array("menu_item_id"=>"menu_telephony_configs"), 
+		"Bitrix\\Voximplant\\Security\\Helper::isSettingsMenuEnabled()" 
+	),
+	Array(
+		"22-777-51", 
+		"/telephony/edit.php?ID=2&LINE_TYPE=SIP&ACTION=show", 
+		Array(), 
+		Array(), 
+		"Bitrix\\Voximplant\\Security\\Helper::isSettingsMenuEnabled()" 
+	)
+);
+?>

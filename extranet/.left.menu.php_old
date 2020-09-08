@@ -1,0 +1,11 @@
+<?
+$aMenuLinks = Array(
+	Array(
+		"Документы-экстранет", 
+		"/extranet/documents-the-extranet/", 
+		Array(), 
+		Array(), 
+		"" 
+	)
+);
+?>

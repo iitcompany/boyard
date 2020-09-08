@@ -1,0 +1,67 @@
+<?
+$aMenuLinks = Array(
+	Array(
+		"Компания", 
+		"/about/", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Сотрудники", 
+		"/company/", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Документы", 
+		"/docs/", 
+		Array(), 
+		Array(), 
+		"CBXFeatures::IsFeatureEnabled('CommonDocuments')" 
+	),
+	Array(
+		"Сервисы", 
+		"/services/", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Группы", 
+		"/workgroups/", 
+		Array(), 
+		Array(), 
+		"CBXFeatures::IsFeatureEnabled('Workgroups')" 
+	),
+	Array(
+		"CRM", 
+		"/crm/", 
+		Array(), 
+		Array(), 
+		"CBXFeatures::IsFeatureEnabled('crm') && CModule::IncludeModule('crm') && CCrmPerms::IsAccessEnabled()" 
+	),
+	Array(
+		"Форум", 
+		"/forum/", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Приложения", 
+		"/marketplace/", 
+		Array(), 
+		Array(), 
+		"CSite::InGroup(array(1))" 
+	),
+	Array(
+		"Телефония", 
+		"/telephony/", 
+		Array(), 
+		Array(), 
+		"CModule::IncludeModule('voximplant') && CSite::InGroup(array(1))" 
+	)
+);
+?>

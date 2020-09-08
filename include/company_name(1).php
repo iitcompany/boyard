@@ -1,0 +1,1 @@
+<img src="/include/logo_BOYARD.png" width="300" height="" border="0">
