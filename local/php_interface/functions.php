@@ -3,7 +3,11 @@
  * @author Lukmanov Mikhail <lukmanof92@gmail.com>
  */
 
-function dump($var, $die = false)
+/**
+ * @param $var
+ * @param bool $die
+ */
+function dump($var, $die = true)
 {
     echo '<pre>';
     var_dump($var);
