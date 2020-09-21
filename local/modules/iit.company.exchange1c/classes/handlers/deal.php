@@ -14,7 +14,7 @@ class Deal
 
     public static function onAfterCrmDealAdd(&$arFields)
     {
-        $arEntity = CCrmDeal::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
+        $arEntity = \CCrmDeal::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
         self::$ENTITY_ID = $arFields['ID'];
         unset($arEntity['ID']);
 
@@ -24,7 +24,7 @@ class Deal
 
     public static function onAfterCrmDealUpdate(&$arFields)
     {
-        $arEntity = CCrmDeal::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
+        $arEntity = \CCrmDeal::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
         self::$ENTITY_ID = $arFields['ID'];
         unset($arEntity['ID']);
 

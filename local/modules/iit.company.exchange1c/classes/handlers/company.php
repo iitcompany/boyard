@@ -14,7 +14,7 @@ class Company
 
     public static function onAfterCrmCompanyAdd(&$arFields)
     {
-        $arEntity = CCrmCompany::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
+        $arEntity = \CCrmCompany::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
         self::$ENTITY_ID = $arFields['ID'];
         unset($arEntity['ID']);
 
@@ -24,7 +24,7 @@ class Company
 
     public static function onAfterCrmCompanyUpdate(&$arFields)
     {
-        $arEntity = CCrmCompany::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
+        $arEntity = \CCrmCompany::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
         self::$ENTITY_ID = $arFields['ID'];
         unset($arEntity['ID']);
 

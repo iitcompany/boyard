@@ -14,7 +14,7 @@ class Contact
 
     public static function onAfterCrmContactAdd(&$arFields)
     {
-        $arEntity = CCrmContact::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
+        $arEntity = \CCrmContact::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
         self::$ENTITY_ID = $arFields['ID'];
         unset($arEntity['ID']);
 
@@ -24,7 +24,7 @@ class Contact
 
     public static function onAfterCrmContactUpdate(&$arFields)
     {
-        $arEntity = CCrmContact::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
+        $arEntity = \CCrmContact::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
         self::$ENTITY_ID = $arFields['ID'];
         unset($arEntity['ID']);
 
