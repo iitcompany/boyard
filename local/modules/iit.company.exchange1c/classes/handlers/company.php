@@ -14,8 +14,9 @@ class Company
 
     public static function onAfterCrmCompanyAdd(&$arFields)
     {
+        $arEntity = CCrmCompany::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
         self::$ENTITY_ID = $arFields['ID'];
-        unset($arFields['ID']);
+        unset($arEntity['ID']);
 
         $hl = new HL();
         $hl->add(self::$ENTITY_TYPE, self::$ENTITY_ID, 'ADD', self::clearFields($arFields));
@@ -23,11 +24,12 @@ class Company
 
     public static function onAfterCrmCompanyUpdate(&$arFields)
     {
+        $arEntity = CCrmCompany::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
         self::$ENTITY_ID = $arFields['ID'];
-        unset($arFields['ID']);
+        unset($arEntity['ID']);
 
         $hl = new HL();
-        $hl->add(self::$ENTITY_TYPE, self::$ENTITY_ID, 'UPDATE', self::clearFields($arFields));
+        $hl->add(self::$ENTITY_TYPE, self::$ENTITY_ID, 'UPDATE', self::clearFields($arEntity));
     }
 
     public static function clearFields($arFields)

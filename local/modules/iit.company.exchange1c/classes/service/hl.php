@@ -45,7 +45,7 @@ class HL
             'UF_ENTITY_ID' => $entityId,
             'UF_FIELDS_UPDATE' => json_encode($arUpdateFields, JSON_UNESCAPED_UNICODE),
             'UF_DATE_PULL_EVENTS_1C' => '',
-            'UF_EVENT_TYPE' => $eventType ?: 'UPDATE',
+            'UF_EVENT_TYPE' => $eventType,
             'UF_DATE_CREATE_EVENT' => new DateTime()
         ];
 
