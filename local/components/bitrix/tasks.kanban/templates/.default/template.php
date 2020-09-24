@@ -71,25 +71,54 @@ if (isset($arParams['INCLUDE_INTERFACE_HEADER']) && $arParams['INCLUDE_INTERFACE
 
     $sortFields[] = [
         'tabId' => 'popupMenuOptions',
-        'text' => '<b>' . Loc::getMessage('KANBAN_SORT_TITLE_MY') . '</b>'
+        'text' => '<b>' . Loc::getMessage('KANBAN_SORT_DEFAULT_FIELDS') . '</b>',
+        'delimiter' => true
     ];
 
     foreach (\CTasks::getAvailableOrderFields() as $codeField) {
+        $nameField = Loc::getMessage('TASKS_FIELDS_' . $codeField) ?: $codeField;
         $sortFields[] = [
             'tabId' => 'popupMenuOptions',
-            'text' => 'По ' . $codeField . ' (По возрастанию)',
+            'text' => 'По ' . $nameField . ' (По возрастанию)',
             'className' => ($arResult['NEW_TASKS_ORDER'] == $codeField.':ASC') ? 'menu-popup-item-accept' : 'menu-popup-item-none',
             'onclick' => 'BX.delegate(BX.Tasks.KanbanComponent.ClickSort)',
             'params' => '{order: "'.$codeField.':ASC"}'
         ];
         $sortFields[] = [
             'tabId' => 'popupMenuOptions',
-            'text' => 'По ' . $codeField . ' (По убыванию)',
+            'text' => 'По ' . $nameField . ' (По убыванию)',
             'className' => ($arResult['NEW_TASKS_ORDER'] == $codeField.':DESC') ? 'menu-popup-item-accept' : 'menu-popup-item-none',
             'onclick' => 'BX.delegate(BX.Tasks.KanbanComponent.ClickSort)',
             'params' => '{order: "'.$codeField.':DESC"}'
         ];
     }
+    $sortFields[] = [
+        'tabId' => 'popupMenuOptions',
+        'text' =>  '<strong>' . Loc::getMessage('KANBAN_SORT_UF_FIELDS'). '</strong>',
+        'delimiter' => true
+    ];
+    global $USER_FIELD_MANAGER;
+    $uf = $USER_FIELD_MANAGER->GetUserFields("TASKS_TASK");
+    foreach ($uf as $key=>$item)
+    {
+        $arField = CUserTypeEntity::GetByID($item['ID']);
+        $nameField = $arField['EDIT_FORM_LABEL'][LANGUAGE_ID] ?: $item['USER_TYPE']['DESCRIPTION'];
+        $sortFields[] = [
+            'tabId' => 'popupMenuOptions',
+            'text' => 'По ' . $nameField . ' (По возрастанию)',
+            'className' => ($arResult['NEW_TASKS_ORDER'] == $item['FIELD_NAME'].':ASC') ? 'menu-popup-item-accept' : 'menu-popup-item-none',
+            'onclick' => 'BX.delegate(BX.Tasks.KanbanComponent.ClickSort)',
+            'params' => '{order: "'.$item['FIELD_NAME'].':ASC"}'
+        ];
+        $sortFields[] = [
+            'tabId' => 'popupMenuOptions',
+            'text' => 'По ' . $nameField . ' (По убыванию)',
+            'className' => ($arResult['NEW_TASKS_ORDER'] == $item['FIELD_NAME'].':DESC') ? 'menu-popup-item-accept' : 'menu-popup-item-none',
+            'onclick' => 'BX.delegate(BX.Tasks.KanbanComponent.ClickSort)',
+            'params' => '{order: "'.$item['FIELD_NAME'].':DESC"}'
+        ];
+    }
+
 
 
     $APPLICATION->IncludeComponent(

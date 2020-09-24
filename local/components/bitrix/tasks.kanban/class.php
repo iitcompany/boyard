@@ -903,10 +903,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 			$params['filter']['STAGES_ID'] = $params['filter']['STAGE_ID'];
 			unset($params['filter']['STAGE_ID']);
 		}
-       /* $params['order'] = [
-            'UF_AUTO_209895155248' => 'ASC'
-            ];*/
-		//dump($params['order']);
+
 		[$rows, $res] = \CTaskItem::fetchList(
 			$this->userId,
 			isset($params['order']) ? $params['order'] : array(),
@@ -1700,6 +1697,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 				'order' => $order,
 				'navigate' => $listParams
 			), true);
+
 			// something wrong
 			if (
 				count($rows) > 0 && $res->NavPageNomer !=
