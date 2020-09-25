@@ -5,6 +5,7 @@
 namespace IITCompany;
 
 use IITCompany\Exchange1C\FileTools;
+use IITCompany\Exchange1C\Handlers\Deal;
 use IITCompany\Exchange1C\Queue;
 
 class Exchange1C
@@ -40,6 +41,12 @@ class Exchange1C
     {
         switch ($this->arRequest['action'])
         {
+            //Получение списка статусов
+            case 'crm.deal.status.list':
+                $ft = new FileTools($this->entityType, $this->arRequest['type']);
+                $ft->createExportFile(Deal::getStatusList());
+                $ft->forceDownloadExportFile();
+                break;
             //Получение изменений из 1С
             case 'crm.deal.update':
             case 'crm.deal.add':
