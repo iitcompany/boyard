@@ -44,6 +44,22 @@ class Deal
         self::$ENTITY_ID = $arFields['ID'];
         unset($arEntity['ID']);
 
+        foreach ($arEntity as $CODE => $VALUE)
+        {
+            switch ($CODE) {
+                case 'COMPANY_ID': {
+                    $arEntity[$CODE] = $VALUE > 0 ?
+                        \CCrmCompany::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch() : [];
+                    break;
+                }
+                case 'CONTACT_ID': {
+                    $arEntity[$CODE] = $VALUE > 0 ?
+                        \CCrmContact::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch() : [];
+                    break;
+                }
+            }
+        }
+
         $hl = new HL();
         $hl->add(self::$ENTITY_TYPE, self::$ENTITY_ID, 'UPDATE', self::clearFields($arEntity));
     }
