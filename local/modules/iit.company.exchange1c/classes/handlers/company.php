@@ -14,22 +14,47 @@ class Company
 
     public static function onAfterCrmCompanyAdd(&$arFields)
     {
-        $arEntity = \CCrmCompany::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
         self::$ENTITY_ID = $arFields['ID'];
-        unset($arEntity['ID']);
 
         $hl = new HL();
-        $hl->add(self::$ENTITY_TYPE, self::$ENTITY_ID, 'ADD', self::clearFields($arFields));
+        $hl->add(self::$ENTITY_TYPE, self::$ENTITY_ID, 'ADD', self::getEntityByID());
     }
 
     public static function onAfterCrmCompanyUpdate(&$arFields)
     {
-        $arEntity = \CCrmCompany::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch();
         self::$ENTITY_ID = $arFields['ID'];
-        unset($arEntity['ID']);
 
         $hl = new HL();
-        $hl->add(self::$ENTITY_TYPE, self::$ENTITY_ID, 'UPDATE', self::clearFields($arEntity));
+        $hl->add(self::$ENTITY_TYPE, self::$ENTITY_ID, 'UPDATE', self::getEntityByID());
+    }
+
+    public static function getEntityByID($ENTITY_ID = false)
+    {
+        if ($ENTITY_ID) {
+            self::$ENTITY_ID = $ENTITY_ID;
+        }
+        $arEntity = \CCrmCompany::GetList([], ['ID' => self::$ENTITY_ID, 'CHECK_PERMISSIONS' => 'N'])->Fetch();
+        $arEntity['PHONE'] = self::getMultiField('PHONE');
+        $arEntity['EMAIL'] = self::getMultiField('EMAIL');
+        $arEntity['WEB'] = self::getMultiField('WEB');
+        unset($arEntity['ID']);
+        return self::clearFields($arEntity);
+    }
+
+    public static function getMultiField($typeID)
+    {
+        $arResult = [];
+        $arFilter = [
+            'ENTITY_ID'  => self::$ENTITY_TYPE,
+            'ELEMENT_ID' => self::$ENTITY_ID,
+            'TYPE_ID' => $typeID
+        ];
+        $rsPhones = \CCrmFieldMulti::GetListEx([],$arFilter,false,[]);
+        while ($arPhone = $rsPhones->fetch())
+        {
+            $arResult[] = $arPhone['VALUE'];
+        }
+        return $arResult;
     }
 
     public static function clearFields($arFields)

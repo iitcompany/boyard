@@ -23,12 +23,12 @@ class Deal
             switch ($CODE) {
                 case 'COMPANY_ID': {
                     $arEntity[$CODE] = $VALUE > 0 ?
-                        \CCrmCompany::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch() : [];
+                        Company::getEntityByID($VALUE) : [];
                     break;
                 }
                 case 'CONTACT_ID': {
                     $arEntity[$CODE] = $VALUE > 0 ?
-                        \CCrmContact::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch() : [];
+                        Contact::getEntityByID($VALUE) : [];
                     break;
                 }
             }
@@ -49,12 +49,12 @@ class Deal
             switch ($CODE) {
                 case 'COMPANY_ID': {
                     $arEntity[$CODE] = $VALUE > 0 ?
-                        \CCrmCompany::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch() : [];
+                        Company::getEntityByID($VALUE) : [];
                     break;
                 }
                 case 'CONTACT_ID': {
                     $arEntity[$CODE] = $VALUE > 0 ?
-                        \CCrmContact::GetList([], ['ID' => $arFields['ID'], 'CHECK_PERMISSIONS' => 'N'])->Fetch() : [];
+                        Contact::getEntityByID($VALUE) : [];
                     break;
                 }
             }
