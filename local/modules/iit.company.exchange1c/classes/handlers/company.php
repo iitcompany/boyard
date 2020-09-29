@@ -38,7 +38,7 @@ class Company
         $arEntity['EMAIL'] = self::getMultiField('EMAIL');
         $arEntity['WEB'] = self::getMultiField('WEB');
         $arEntity['REQUISITE'] = self::getRequisite();
-        unset($arEntity['ID']);
+
         return self::clearFields($arEntity);
     }
 
