@@ -37,8 +37,32 @@ class Company
         $arEntity['PHONE'] = self::getMultiField('PHONE');
         $arEntity['EMAIL'] = self::getMultiField('EMAIL');
         $arEntity['WEB'] = self::getMultiField('WEB');
+        $arEntity['REQUISITE'] = self::getRequisite();
         unset($arEntity['ID']);
         return self::clearFields($arEntity);
+    }
+
+    public static function getRequisite()
+    {
+        $arRequisite = [];
+
+        $rq = new \Bitrix\Crm\EntityRequisite();
+        $rsReq = $rq->getList(['filter' => ['ENTITY_ID' => self::$ENTITY_ID]]);
+        $arReq = $rsReq->Fetch();
+        foreach ($arReq as $CODE => $VALUE)
+        {
+            if (strpos($CODE, 'RQ_') !== false)
+            {
+                $arRequisite[$CODE] = $VALUE;
+            }
+        }
+
+        $arAddress = \Bitrix\Crm\EntityRequisite::getAddresses($arReq['ID']);
+
+        $arRequisite['ACTUAL'] = $arAddress[1] ?: [];
+        $arRequisite['LEGAL'] = $arAddress[6] ?: [];
+
+        return $arRequisite;
     }
 
     public static function getMultiField($typeID)
