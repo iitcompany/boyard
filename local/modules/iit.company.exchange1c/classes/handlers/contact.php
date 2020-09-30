@@ -37,7 +37,7 @@ class Contact
         $arEntity['PHONE'] = self::getMultiField('PHONE');
         $arEntity['EMAIL'] = self::getMultiField('EMAIL');
         $arEntity['WEB'] = self::getMultiField('WEB');
-        unset($arEntity['ID']);
+
         return self::clearFields($arEntity);
     }
 
