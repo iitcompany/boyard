@@ -33,7 +33,7 @@ class Contact
         if ($ENTITY_ID) {
             self::$ENTITY_ID = $ENTITY_ID;
         }
-        $arEntity = \CCrmCompany::GetList([], ['ID' => self::$ENTITY_ID, 'CHECK_PERMISSIONS' => 'N'])->Fetch();
+        $arEntity = \CCrmContact::GetList([], ['ID' => self::$ENTITY_ID, 'CHECK_PERMISSIONS' => 'N'])->Fetch();
         $arEntity['PHONE'] = self::getMultiField('PHONE');
         $arEntity['EMAIL'] = self::getMultiField('EMAIL');
         $arEntity['WEB'] = self::getMultiField('WEB');
