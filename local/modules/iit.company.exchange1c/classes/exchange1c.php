@@ -55,7 +55,8 @@ class Exchange1C
             case 'crm.company.add':
                 $arEntityFields = $this->loadEntityFields();
                 if ($arEntityFields) {
-                    $this->processEntityB24($arEntityFields);
+                    echo json_encode(['result' => $this->processEntityB24($arEntityFields)]);
+                    die();
                 } else {
                     $this->LAST_ERROR = 'Ошибка, нет полей для обновления/добавления';
                 }
@@ -109,7 +110,7 @@ class Exchange1C
 
             if (isset($res) && $res)
             {
-                return true;
+                return $res;
             }
             else
             {
@@ -132,10 +133,6 @@ class Exchange1C
             if (strpos($CODE, $this->propPrefix) !== false) {
                 $arEntityFields[str_replace($this->propPrefix, '', $CODE)] = $VALUE;
             }
-        }
-        if (!isset($arEntityFields['ID']) || empty($arEntityFields['ID'])) {
-            $this->LAST_ERROR = 'Ошибка, не указано поле ID сущности!';
-            return false;
         }
         if (count($arEntityFields) == 1 && isset($arEntityFields['ID'])) {
             $this->LAST_ERROR = 'Ошибка, нет полей для обновления!';
