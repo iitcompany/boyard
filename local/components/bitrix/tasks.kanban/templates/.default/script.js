@@ -1,15 +1,14 @@
 BX.namespace("Tasks.KanbanComponent");
 
-BX.addCustomEvent('Kanban.Column:render', function (column) {
-	addResponsibleSort(column.grid);
-});
-
-BX.addCustomEvent('Kanban.Grid:onFirstRender', function (grid) {
+BX.addCustomEvent('Kanban.Grid:onRender', function (grid) {
 	addResponsibleSort(grid);
 
 	BX.addCustomEvent('onTaskSortChanged', function () {
 		grid.onApplyFilter();
 	});
+});
+BX.addCustomEvent('Kanban.Column:render', function (column) {
+	addResponsibleSort(column.grid);
 });
 
 $(document).ready(function () {
