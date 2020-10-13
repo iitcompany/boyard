@@ -39,27 +39,56 @@ class Exchange1C
 
     public function init()
     {
+        $arResponse = [];
+        $arEntityFields =  $this->loadEntityFields();
+
         switch ($this->arRequest['action'])
         {
+            case 'crm.requisite.add':
+                $rq = new \Bitrix\Crm\EntityRequisite();
+
+                $res = $rq->add($arEntityFields);
+                if ($res->isSuccess()) {
+                    $arResponse['result'] = $res;
+                    $arResponse['id'] = $res->getId();
+                } else {
+                    $this->LAST_ERROR = $res->getErrorMessages();
+                }
+                break;
+            case 'crm.requisite.update':
+                $rq = new \Bitrix\Crm\EntityRequisite();
+
+                $res = $rq->update($arEntityFields['ID'], $arEntityFields);
+
+                if ($res->isSuccess()) {
+                    $arResponse['result'] = true;
+                } else {
+                    $this->LAST_ERROR = $res->getErrorMessages();
+                }
+                break;
+
             //Получение списка статусов
             case 'crm.deal.status.list':
                 $ft = new FileTools($this->entityType, $this->arRequest['type']);
                 $ft->createExportFile(Deal::getStatusList());
                 $ft->forceDownloadExportFile();
                 break;
+
             //Получение изменений из 1С
             case 'crm.deal.update':
-            case 'crm.deal.add':
             case 'crm.contact.update':
             case 'crm.company.update':
+
+                $arResponse['result'] = $this->processEntityB24($arEntityFields);;
+
+                break;
+            case 'crm.deal.add':
             case 'crm.company.add':
-                $arEntityFields = $this->loadEntityFields();
-                if ($arEntityFields) {
-                    echo json_encode(['result' => $this->processEntityB24($arEntityFields)]);
-                    die();
-                } else {
-                    $this->LAST_ERROR = 'Ошибка, нет полей для обновления/добавления';
-                }
+                $res =  $this->processEntityB24($arEntityFields);
+
+                $arResponse['result'] = $res > 0 && $res != false ? true : false;
+                $arResponse['id'] = $this->processEntityB24($arEntityFields);
+
                 break;
 
             //Отправка изменений из Б24
@@ -75,7 +104,13 @@ class Exchange1C
         }
 
         if ($this->LAST_ERROR) {
-            echo $this->LAST_ERROR;
+            $arResponse['result'] = false;
+            $arResponse['message'] = $this->LAST_ERROR;
+        }
+
+        if (isset($arResponse['result']))
+        {
+            echo json_encode($arResponse, JSON_UNESCAPED_UNICODE);
             die();
         }
 
