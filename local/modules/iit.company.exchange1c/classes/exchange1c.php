@@ -166,7 +166,7 @@ class Exchange1C
         $arEntityFields = [];
         foreach ($this->arRequest as $CODE => $VALUE) {
             if (strpos($CODE, $this->propPrefix) !== false) {
-                $arEntityFields[str_replace($this->propPrefix, '', $CODE)] = $VALUE;
+                $arEntityFields[str_replace($this->propPrefix, '', $CODE)] = urldecode($VALUE);
             }
         }
         if (count($arEntityFields) == 1 && isset($arEntityFields['ID'])) {
