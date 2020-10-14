@@ -1999,7 +1999,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 	 */
 	protected function getNewTaskOrder()
 	{
-		$groupId = $this->arParams['GROUP_ID'];
+		/*$groupId = $this->arParams['GROUP_ID'];
 
 		if ($groupId > 0 && $this->arParams['PERSONAL'] != 'Y')
 		{
@@ -2013,9 +2013,9 @@ class TasksKanbanComponent extends \CBitrixComponent
 			}
 		}
 		else
-		{
+		{*/
 			return \CUserOptions::getOption('tasks', 'order_new_task_v2', 'actual');
-		}
+		//}
 	}
 
 	/**
@@ -2909,16 +2909,16 @@ class TasksKanbanComponent extends \CBitrixComponent
 			$this->canSortTasks()
 		)
 		{
-			if ($groupId > 0 && $this->arParams['PERSONAL'] != 'Y')
+			/*if ($groupId > 0 && $this->arParams['PERSONAL'] != 'Y')
 			{
 				ProjectsTable::set($groupId, array(
 					'ORDER_NEW_TASK' => $order
 				));
 			}
 			else
-			{
+			{*/
 				\CUserOptions::setOption('tasks', 'order_new_task_v2', $order);
-			}
+			//}
 		}
 
 		return array(

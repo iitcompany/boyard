@@ -3,9 +3,14 @@ BX.namespace("Tasks.KanbanComponent");
 BX.addCustomEvent('Kanban.Grid:onRender', function (grid) {
 	addResponsibleSort(grid);
 
-	BX.addCustomEvent('onTaskSortChanged', function () {
-		grid.onApplyFilter();
-	});
+	if (typeof grid.task_sort === 'undefined')
+	{
+		BX.addCustomEvent('onTaskSortChanged', function () {
+			grid.onApplyFilter();
+			grid.task_sort = true;
+		});
+	}
+
 });
 BX.addCustomEvent('Kanban.Column:render', function (column) {
 	addResponsibleSort(column.grid);
@@ -93,6 +98,7 @@ function addResponsibleSort(grid)
 
 BX.Tasks.KanbanComponent.ClickSort = function(event, item)
 {
+	console.log(item);
 	var order = "desc";
 
 	if (
