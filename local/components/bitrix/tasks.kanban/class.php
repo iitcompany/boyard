@@ -843,14 +843,11 @@ class TasksKanbanComponent extends \CBitrixComponent
 				'ID' => 'asc'
 			];
 		}
-		else
-		{
 
-		}
 
         $newTaskOrder = explode(':', $this->getNewTaskOrder());
         $this->order = [
-            'RESPONSIBLE_ID' => 'asc'
+            ///'RESPONSIBLE_ID' => 'asc'
 
             //'STATUS_COMPLETE' => 'ASC',
             //'DEADLINE' => 'ASC,NULLS',
@@ -919,7 +916,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 			isset($params['select']) ? array_merge($params['select'], array_keys($params['order'])) : array()
 		);
 
-	
+
 
 		return $asIs ? array($rows, $res) : $rows;
 	}
@@ -953,6 +950,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 			foreach ($covers as $taskId => $cover)
 			{
 				$items[$taskId]['data']['background'] = $cover;
+
 			}
 		}
 
@@ -2425,7 +2423,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 						}
 						else
 						{
-							Task\SortingTable::deleteByTaskId($data['id']);
+                            Task\SortingTable::deleteByTaskId($data['id']);
 						}
 
 						// if is the same column, just sorting
@@ -2909,8 +2907,9 @@ class TasksKanbanComponent extends \CBitrixComponent
 	 */
 	protected function actionSetNewTaskOrder()
 	{
-		$order = $this->request('order');
-		$groupId = $this->arParams['GROUP_ID'];
+		foreach($this->getData() as $data) {
+            Task\SortingTable::deleteByTaskId($data['id']);
+        }
 
 		if (
 			($order = $this->request('order')) &&
@@ -2926,6 +2925,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 			}
 			else
 			{*/
+
 				\CUserOptions::setOption('tasks', 'order_new_task_v2', $order);
 			//}
 		}

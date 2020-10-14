@@ -36,12 +36,13 @@ function addResponsibleSort(grid)
 		users = {};
 
 	$.each(grid.items, function (itemId, item) {
-		let itemEl = $('[data-id="' + itemId + '"]'),
-			userId = item.data.responsible.id;
+		if (typeof item.data.responsible !== 'undefined' && typeof item.data.responsible.id !== 'undefined') {
+			let itemEl = $('[data-id="' + itemId + '"]'),
+				userId = item.data.responsible.id;
 
-		users[userId] = item.data.responsible.name;
-
-		itemEl.attr('data-user-id', userId);
+				users[userId] = item.data.responsible.name;
+				itemEl.attr('data-user-id', userId);
+		}
 	});
 
 	kanbanColumns.each(function () {
