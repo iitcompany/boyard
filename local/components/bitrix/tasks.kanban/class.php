@@ -845,15 +845,22 @@ class TasksKanbanComponent extends \CBitrixComponent
 		}
 		else
 		{
-		    $newTaskOrder = explode(':', $this->getNewTaskOrder());
-			$this->order = [
-                $newTaskOrder[0] => $newTaskOrder[1],
-                'RESPONSIBLE_ID' => 'ASC'
-				//'STATUS_COMPLETE' => 'ASC',
-				//'DEADLINE' => 'ASC,NULLS',
-				//'ID' => 'ASC'
-			];
+
 		}
+
+        $newTaskOrder = explode(':', $this->getNewTaskOrder());
+        $this->order = [
+            'RESPONSIBLE_ID' => 'asc'
+
+            //'STATUS_COMPLETE' => 'ASC',
+            //'DEADLINE' => 'ASC,NULLS',
+            //'ID' => 'ASC'
+        ];
+
+        if (!empty($newTaskOrder))
+        {
+            $this->order[$newTaskOrder[0]] = strtolower($newTaskOrder[1]);
+        }
 
 		return $this->order;
 	}
@@ -877,7 +884,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 			$this->taskType == static::TASK_TYPE_GROUP
 		)
 		{
-			$this->listParams['SORTING_GROUP_ID'] = $this->arParams['GROUP_ID'];
+			//$this->listParams['SORTING_GROUP_ID'] = $this->arParams['GROUP_ID'];
 		}
 		return $this->listParams;
 	}
@@ -909,8 +916,10 @@ class TasksKanbanComponent extends \CBitrixComponent
 			isset($params['order']) ? $params['order'] : array(),
 			isset($params['filter']) ? $params['filter'] : array(),
 			isset($params['navigate']) ? $params['navigate'] : array(),
-			isset($params['select']) ? $params['select'] : array()
+			isset($params['select']) ? array_merge($params['select'], array_keys($params['order'])) : array()
 		);
+
+	
 
 		return $asIs ? array($rows, $res) : $rows;
 	}
