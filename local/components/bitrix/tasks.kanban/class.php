@@ -412,7 +412,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 			$access = $this->isAdmin();
 		}
 
-		return $access;
+		return true;
 	}
 
 	/**
