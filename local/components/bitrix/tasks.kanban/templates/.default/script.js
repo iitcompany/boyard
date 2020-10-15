@@ -1,29 +1,54 @@
 BX.namespace("Tasks.KanbanComponent");
 
-BX.addCustomEvent('Kanban.Grid:onRender', function (grid) {
-	addResponsibleSort(grid);
 
-	if (typeof grid.task_sort === 'undefined')
-	{
-		BX.addCustomEvent('onTaskSortChanged', function () {
-			grid.onApplyFilter();
-			grid.task_sort = true;
-		});
-	}
+let enabledSort = BX.getCookie('enabledSort');
 
-});
-BX.addCustomEvent('Kanban.Column:render', function (column) {
-	addResponsibleSort(column.grid);
-});
+if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled') {
+	BX.addCustomEvent('Kanban.Grid:onRender', function (grid) {
+		addResponsibleSort(grid);
+
+		if (typeof grid.task_sort === 'undefined')
+		{
+			BX.addCustomEvent('onTaskSortChanged', function () {
+				grid.onApplyFilter();
+				grid.task_sort = true;
+			});
+		}
+
+	});
+	BX.addCustomEvent('Kanban.Column:render', function (column) {
+		addResponsibleSort(column.grid);
+	});
+}
+
 
 $(document).ready(function () {
-	$('.main-kanban-column-body').scroll(function () {
-		let $this = $(this);
+	let enabledSort = BX.getCookie('enabledSort'),
+		btn = $('#tasks-popupMenuOptions');
 
-		$('.main-kanban-column-body').each(function () {
-			$(this).scrollTop($this.scrollTop());
+
+	if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled')
+	{
+		btn.before('<button data-value="disabled" class="js-init-set-sort ui-btn ui-btn-default">Отключить сортировку</button>');
+
+		$('.main-kanban-column-body').scroll(function () {
+			let $this = $(this);
+
+			$('.main-kanban-column-body').each(function () {
+				$(this).scrollTop($this.scrollTop());
+			});
 		});
+	} else {
+		btn.before('<button data-value="enabled" class="js-init-set-sort ui-btn ui-btn-primary">Включить сортировку</button>');
+	}
+
+	$('.js-init-set-sort').on('click', function() {
+		let val = $(this).attr('data-value');
+
+		BX.setCookie('enabledSort', val, {expires: 86400, path: '/'});
+		window.location.reload();
 	});
+
 });
 
 
@@ -97,130 +122,120 @@ function addResponsibleSort(grid)
 	});
 }
 
-BX.Tasks.KanbanComponent.ClickSort = function(event, item)
+if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled')
 {
-	console.log(item);
-	var order = "desc";
+	BX.Tasks.KanbanComponent.ClickSort = function (event, item) {
+		console.log(item);
+		var order = "desc";
 
-	if (
-		typeof item.params !== "undefined" &&
-		typeof item.params.order !== "undefined"
-	)
-	{
-		order = item.params.order;
-	}
-
-	// refresh icons and save selected
-	if (!BX.hasClass(BX(item.layout.item), "menu-popup-item-accept"))
-	{
-		var menuItems = item.menuWindow.menuItems;
-		for (var i = 0, c = menuItems.length; i < c; i++)
-		{
-			BX.removeClass(BX(menuItems[i].layout.item), "menu-popup-item-accept");
+		if (
+			typeof item.params !== "undefined" &&
+			typeof item.params.order !== "undefined"
+		) {
+			order = item.params.order;
 		}
-		BX.addClass(BX(item.layout.item), "menu-popup-item-accept");
 
-		BX.ajax({
-			method: "POST",
-			dataType: "json",
-			url: ajaxHandlerPath,
-			data: {
-				action: "setNewTaskOrder",
-				order: order,
-				sessid: BX.bitrix_sessid(),
-				params: ajaxParams
-			},
-			onsuccess: function(data)
-			{
-				BX.onCustomEvent(this, "onTaskSortChanged", [data]);
+		// refresh icons and save selected
+		if (!BX.hasClass(BX(item.layout.item), "menu-popup-item-accept")) {
+			var menuItems = item.menuWindow.menuItems;
+			for (var i = 0, c = menuItems.length; i < c; i++) {
+				BX.removeClass(BX(menuItems[i].layout.item), "menu-popup-item-accept");
+			}
+			BX.addClass(BX(item.layout.item), "menu-popup-item-accept");
+
+			BX.ajax({
+				method: "POST",
+				dataType: "json",
+				url: ajaxHandlerPath,
+				data: {
+					action: "setNewTaskOrder",
+					order: order,
+					sessid: BX.bitrix_sessid(),
+					params: ajaxParams
+				},
+				onsuccess: function (data) {
+					BX.onCustomEvent(this, "onTaskSortChanged", [data]);
+
+				}
+			});
+		}
+	};
+
+	BX.Tasks.KanbanComponent.filterId = {};
+	BX.Tasks.KanbanComponent.defaultPresetId = {};
+
+	BX.Tasks.KanbanComponent.onReady = function () {
+		// sort-button is disabled
+		BX.bind(BX("tasks-popupMenuOptions"), "click", BX.delegate(function () {
+			if (BX.data(BX("tasks-popupMenuOptions"), "disabled") === true) {
+				var tooltip = new BX.PopupWindow(
+					"popupMenuOptionsDisabled",
+					BX("tasks-popupMenuOptions"),
+					{
+						closeByEsc: true,
+						angle: true,
+						offsetLeft: 5,
+						darkMode: true,
+						autoHide: true,
+						zIndex: 1000,
+						content: BX.message("TASKS_KANBAN_DIABLE_SORT_TOOLTIP")
+					}
+				);
+				if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled') {
+					tooltip.show();
+				}
+			}
+		}));
+
+		BX.addCustomEvent('Tasks.TopMenu:onItem', function (roleId, url) {
+			var filterManager = BX.Main.filterManager.getById(BX.Tasks.KanbanComponent.filterId);
+			if (!filterManager) {
+				alert('BX.Main.filterManager not initialised');
+				return;
+			}
+
+			var fields = {
+				preset_id: BX.Tasks.KanbanComponent.defaultPresetId,
+				additional: {ROLEID: (roleId === 'view_all' ? 0 : roleId)}
+			};
+			var filterApi = filterManager.getApi();
+			filterApi.setFilter(fields);
+
+			window.history.pushState(null, null, url);
+		});
+
+		BX.addCustomEvent('Tasks.Toolbar:onItem', function (counterId) {
+			var filterManager = BX.Main.filterManager.getById(BX.Tasks.KanbanComponent.filterId);
+			if (!filterManager) {
+				alert('BX.Main.filterManager not initialised');
+				return;
+			}
+			var filterApi = filterManager.getApi();
+			var filterFields = filterManager.getFilterFieldsValues();
+
+			if (Number(counterId) === 12582912 || Number(counterId) === 6291456) {
+				var fields = {
+					ROLEID: (filterFields.hasOwnProperty('ROLEID') ? filterFields.ROLEID : 0),
+					PROBLEM: counterId
+				};
+				filterApi.setFields(fields);
+				filterApi.apply();
+			} else {
+				fields = {
+					preset_id: BX.Tasks.KanbanComponent.defaultPresetId,
+					additional: {
+						PROBLEM: counterId,
+					}
+				};
+				if (filterFields.hasOwnProperty('ROLEID')) {
+					fields.additional.ROLEID = filterFields.ROLEID;
+				}
+				filterApi.setFilter(fields);
 			}
 		});
-	}
-};
+	};
 
-BX.Tasks.KanbanComponent.filterId = {};
-BX.Tasks.KanbanComponent.defaultPresetId = {};
-
-BX.Tasks.KanbanComponent.onReady = function()
-{
-	// sort-button is disabled
-	BX.bind(BX("tasks-popupMenuOptions"), "click", BX.delegate(function()
-	{
-		if (BX.data(BX("tasks-popupMenuOptions"), "disabled") === true)
-		{
-			var tooltip = new BX.PopupWindow(
-				"popupMenuOptionsDisabled",
-				BX("tasks-popupMenuOptions"),
-				{
-					closeByEsc: true,
-					angle: true,
-					offsetLeft: 5,
-					darkMode: true,
-					autoHide: true,
-					zIndex: 1000,
-					content: BX.message("TASKS_KANBAN_DIABLE_SORT_TOOLTIP")
-				}
-			);
-
-			tooltip.show();
-		}
-	}));
-
-	BX.addCustomEvent('Tasks.TopMenu:onItem', function(roleId, url) {
-		var filterManager = BX.Main.filterManager.getById(BX.Tasks.KanbanComponent.filterId);
-		if (!filterManager)
-		{
-			alert('BX.Main.filterManager not initialised');
-			return;
-		}
-
-		var fields = {
-			preset_id: BX.Tasks.KanbanComponent.defaultPresetId,
-			additional: {ROLEID: (roleId === 'view_all' ? 0 : roleId)}
-		};
-		var filterApi = filterManager.getApi();
-		filterApi.setFilter(fields);
-
-		window.history.pushState(null, null, url);
-	});
-
-	BX.addCustomEvent('Tasks.Toolbar:onItem', function(counterId) {
-		var filterManager = BX.Main.filterManager.getById(BX.Tasks.KanbanComponent.filterId);
-		if (!filterManager)
-		{
-			alert('BX.Main.filterManager not initialised');
-			return;
-		}
-		var filterApi = filterManager.getApi();
-		var filterFields = filterManager.getFilterFieldsValues();
-
-		if (Number(counterId) === 12582912 || Number(counterId) === 6291456)
-		{
-			var fields = {
-				ROLEID: (filterFields.hasOwnProperty('ROLEID') ? filterFields.ROLEID : 0),
-				PROBLEM: counterId
-			};
-			filterApi.setFields(fields);
-			filterApi.apply();
-		}
-		else
-		{
-			fields = {
-				preset_id: BX.Tasks.KanbanComponent.defaultPresetId,
-				additional: {
-					PROBLEM: counterId,
-				}
-			};
-			if (filterFields.hasOwnProperty('ROLEID'))
-			{
-				fields.additional.ROLEID = filterFields.ROLEID;
-			}
-			filterApi.setFilter(fields);
-		}
-	});
-};
-
-
+}
 BX.addCustomEvent("SidePanel.Slider:onCloseByEsc", function(event) {
 	var reg = /tasks\/task\/edit/;
 	var str = event.getSlider().getUrl();
