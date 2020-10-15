@@ -1,11 +1,12 @@
 BX.namespace("Tasks.KanbanComponent");
 
-
 let enabledSort = BX.getCookie('enabledSort');
 
-if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled') {
 	BX.addCustomEvent('Kanban.Grid:onRender', function (grid) {
-		addResponsibleSort(grid);
+		if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled') {
+			addResponsibleSort(grid);
+		}
+
 
 		if (typeof grid.task_sort === 'undefined')
 		{
@@ -17,9 +18,12 @@ if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled') {
 
 	});
 	BX.addCustomEvent('Kanban.Column:render', function (column) {
-		addResponsibleSort(column.grid);
+		if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled') {
+			addResponsibleSort(column.grid);
+		}
+
 	});
-}
+
 
 
 $(document).ready(function () {
@@ -122,8 +126,6 @@ function addResponsibleSort(grid)
 	});
 }
 
-if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled')
-{
 	BX.Tasks.KanbanComponent.ClickSort = function (event, item) {
 		console.log(item);
 		var order = "desc";
@@ -181,9 +183,8 @@ if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled')
 						content: BX.message("TASKS_KANBAN_DIABLE_SORT_TOOLTIP")
 					}
 				);
-				if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled') {
-					tooltip.show();
-				}
+				tooltip.show();
+
 			}
 		}));
 
@@ -235,7 +236,7 @@ if (typeof enabledSort !== 'undefined' && enabledSort === 'enabled')
 		});
 	};
 
-}
+
 BX.addCustomEvent("SidePanel.Slider:onCloseByEsc", function(event) {
 	var reg = /tasks\/task\/edit/;
 	var str = event.getSlider().getUrl();
