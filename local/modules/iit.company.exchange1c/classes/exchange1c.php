@@ -4,6 +4,7 @@
  */
 namespace IITCompany;
 
+use Bitrix\Main\Context;
 use IITCompany\Exchange1C\FileTools;
 use IITCompany\Exchange1C\Handlers\Deal;
 use IITCompany\Exchange1C\Queue;
@@ -166,14 +167,24 @@ class Exchange1C
         $arEntityFields = [];
         foreach ($this->arRequest as $CODE => $VALUE) {
             if (strpos($CODE, $this->propPrefix) !== false) {
-                $arEntityFields[str_replace($this->propPrefix, '', $CODE)] = urldecode($VALUE);
+
+                $arEntityFields[str_replace($this->propPrefix, '', $CODE)] = urldecode($this->htmlentities2utf8(str_replace('%0', '%', urlencode($VALUE))));
+
             }
         }
+
         if (count($arEntityFields) == 1 && isset($arEntityFields['ID'])) {
             $this->LAST_ERROR = 'Ошибка, нет полей для обновления!';
             return false;
         }
+
         return $arEntityFields;
+    }
+
+    function htmlentities2utf8 ($string)
+    {
+        $string = preg_replace_callback('~&(#(x?))?([^;]+);~', 'html_entity_replace', $string);
+        return $string;
     }
 
     public function validateRequestFields($arRequest = [])
