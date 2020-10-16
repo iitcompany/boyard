@@ -389,6 +389,8 @@ class TasksKanbanComponent extends \CBitrixComponent
 	 */
 	protected function canSortTasks()
 	{
+	    return true;
+
 		static $access = null;
 
 		if ($access !== null)
@@ -857,6 +859,11 @@ class TasksKanbanComponent extends \CBitrixComponent
         if (!empty($newTaskOrder))
         {
             $this->order[$newTaskOrder[0]] = strtolower($newTaskOrder[1]);
+        } else {
+            $this->order = [
+                'ACTIVITY_DATE' => 'desc',
+                'ID' => 'asc'
+            ];
         }
 
 		return $this->order;
@@ -881,7 +888,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 			$this->taskType == static::TASK_TYPE_GROUP
 		)
 		{
-			//$this->listParams['SORTING_GROUP_ID'] = $this->arParams['GROUP_ID'];
+			$this->listParams['SORTING_GROUP_ID'] = $this->arParams['GROUP_ID'];
 		}
 		return $this->listParams;
 	}
@@ -913,7 +920,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 			isset($params['order']) ? $params['order'] : array(),
 			isset($params['filter']) ? $params['filter'] : array(),
 			isset($params['navigate']) ? $params['navigate'] : array(),
-			isset($params['select']) ? array_merge($params['select'], array_keys($params['order'])) : array()
+			isset($params['select']) ? $params['select'] : array()
 		);
 
 
@@ -1732,9 +1739,9 @@ class TasksKanbanComponent extends \CBitrixComponent
 			}
 		}
 
-        usort($items, function($a, $b){
+       /* usort($items, function($a, $b){
             return ($a['data']['responsible'] - $b['data']['responsible']);
-        });
+        });*/
 
 		// get other data
 		$items = $this->getUsers($items);
@@ -2907,14 +2914,18 @@ class TasksKanbanComponent extends \CBitrixComponent
 	 */
 	protected function actionSetNewTaskOrder()
 	{
-		foreach($this->getData() as $data) {
-            Task\SortingTable::deleteByTaskId($data['id']);
+
+	    if (isset($_COOKIE['enabledSort']) && $_COOKIE['enabledSort'] == 'enabled') {
+            foreach($this->getData() as $data) {
+                Task\SortingTable::deleteByTaskId($data['id']);
+            }
         }
 
+
 		if (
-			($order = $this->request('order')) &&
-			//in_array($order, ['asc', 'desc', 'actual']) &&
-			$this->canSortTasks()
+			($order = $this->request('order'))
+           // && in_array($order, ['asc', 'desc', 'actual']) &&
+			//$this->canSortTasks()
 		)
 		{
 			/*if ($groupId > 0 && $this->arParams['PERSONAL'] != 'Y')

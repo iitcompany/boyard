@@ -157,7 +157,7 @@ function addResponsibleSort(grid)
 				},
 				onsuccess: function (data) {
 					BX.onCustomEvent(this, "onTaskSortChanged", [data]);
-
+					//this.onApplyFilter();
 				}
 			});
 		}
