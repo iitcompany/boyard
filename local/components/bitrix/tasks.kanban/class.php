@@ -1739,9 +1739,11 @@ class TasksKanbanComponent extends \CBitrixComponent
 			}
 		}
 
-       /* usort($items, function($a, $b){
-            return ($a['data']['responsible'] - $b['data']['responsible']);
-        });*/
+        if (isset($_COOKIE['enabledSort']) && $_COOKIE['enabledSort'] == 'enabled') {
+            usort($items, function($a, $b){
+                return ($a['data']['responsible'] - $b['data']['responsible']);
+            });
+        }
 
 		// get other data
 		$items = $this->getUsers($items);
