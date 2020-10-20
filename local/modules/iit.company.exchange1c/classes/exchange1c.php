@@ -85,6 +85,7 @@ class Exchange1C
                 break;
             case 'crm.deal.add':
             case 'crm.company.add':
+            case 'crm.contact.add':
                 $res =  $this->processEntityB24($arEntityFields);
 
                 $arResponse['result'] = $res > 0 && $res != false ? true : false;
