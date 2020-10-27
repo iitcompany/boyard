@@ -1740,9 +1740,9 @@ class TasksKanbanComponent extends \CBitrixComponent
 		}
 
         if (isset($_COOKIE['enabledSort']) && $_COOKIE['enabledSort'] == 'enabled') {
-            usort($items, function($a, $b){
+            /*usort($items, function($a, $b){
                 return ($a['data']['responsible'] - $b['data']['responsible']);
-            });
+            });*/
         } else {
             /*usort($items, function($a, $b){
                 return ($a['data']['responsible'] - $b['data']['responsible']);
