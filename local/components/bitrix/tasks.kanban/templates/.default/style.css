@@ -9,3 +9,16 @@
      font-weight: bold;
      border-bottom: 1px solid #87989a;
  }
+
+.general-scroll .main-kanban-column-body {
+     overflow-x: visible;
+     overflow-y: visible;
+}
+.general-scroll .main-kanban-inner {
+     overflow-y: scroll;
+     -ms-overflow-style: none;
+     overflow: -moz-scrollbars-none;
+}
+.general-scroll .main-kanban-inner::-webkit-scrollbar {
+     width: 0;
+}

@@ -35,13 +35,8 @@ $(document).ready(function () {
 	{
 		btn.before('<button data-value="disabled" class="js-init-set-sort ui-btn ui-btn-default">Отключить сортировку</button>');
 
-		$('.main-kanban-column-body').scroll(function () {
-			let $this = $(this);
+		$('body').addClass('general-scroll');
 
-			$('.main-kanban-column-body').each(function () {
-				$(this).scrollTop($this.scrollTop());
-			});
-		});
 	} else {
 		btn.before('<button data-value="enabled" class="js-init-set-sort ui-btn ui-btn-primary">Включить сортировку</button>');
 	}

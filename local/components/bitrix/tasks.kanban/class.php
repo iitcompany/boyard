@@ -1704,7 +1704,7 @@ class TasksKanbanComponent extends \CBitrixComponent
 					)
 				);
 			}
-
+			$listParams['NAV_PARAMS']['nPageSize'] = 400;
 			[$rows, $res] = $this->getList(array(
 				'select' => $select,
 				'filter' => $filterTmp,
@@ -1740,9 +1740,9 @@ class TasksKanbanComponent extends \CBitrixComponent
 		}
 
         if (isset($_COOKIE['enabledSort']) && $_COOKIE['enabledSort'] == 'enabled') {
-            /*usort($items, function($a, $b){
+            usort($items, function($a, $b){
                 return ($a['data']['responsible'] - $b['data']['responsible']);
-            });*/
+            });
         } else {
             /*usort($items, function($a, $b){
                 return ($a['data']['responsible'] - $b['data']['responsible']);
